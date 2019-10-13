@@ -59,8 +59,7 @@ logoutUser config@Config.Config {..} = do
   _             <- liftIO $ ServantClient.runClientM logoutApi env
   cookieHeaders <- liftIO $ expireCookies _configCookieSettings
   throwError err302
-    { errHeaders = cookieHeaders
-                     ++ [(Header.hLocation, logoutHeaderLocation config)]
+    { errHeaders = cookieHeaders <> [(Header.hLocation, logoutHeaderLocation config)]
     }
 
 logoutHeaderLocation :: Config.Config -> ByteStringChar8.ByteString
@@ -109,26 +108,21 @@ checkCreds Config.Config {..} (Just code) = do
         (Auth0Types.mkClientId _configClientID)
         (Auth0Types.mkClientSecret _configClientSecret)
         (Text.pack code)
-        (  Just
-        $  Text.pack
-        $  Text.unpack _configApplicationDomain
-        ++ "/"
-        ++ Text.unpack _configLogoutRoute
-        )
+        (Just $ _configApplicationDomain <> "/" <> _configLogoutRoute)
   env <- liftIO $ Auth0.mkAuth0Env $ Text.unpack _configTenantDomain
   res <- liftIO $ ServantClient.runClientM (Auth0GetToken.getToken bdy) env
   case res of
     Left _ -> throwError err302
       { errHeaders = [("Location", TextEncoding.encodeUtf8 _configLogoutRoute)]
       }
-    Right tokenResponse -> case Auth0GetToken.idToken tokenResponse of
-      Nothing    -> throwError err401
-      Just idJWT -> do
-        cookieHeaders <- liftIO
-          $ acceptAuth0LoginForRedirect _configCookieSettings idJWT
-        throwError err302
-          { errHeaders = cookieHeaders <> [(Header.hLocation, TextEncoding.encodeUtf8 "app")]
-          }
+    Right tokenResponse ->
+      case Auth0GetToken.idToken tokenResponse of
+        Nothing    -> throwError err401
+        Just idJWT -> do
+          cookieHeaders <- liftIO $ acceptAuth0LoginForRedirect _configCookieSettings idJWT
+          throwError err302
+            { errHeaders = cookieHeaders <> [(Header.hLocation, TextEncoding.encodeUtf8 "app")]
+            }
 checkCreds _ Nothing = throwError err401
 
 acceptAuth0LoginForRedirect
