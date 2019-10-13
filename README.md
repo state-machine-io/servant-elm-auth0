@@ -35,4 +35,6 @@ Uses stack exec and [parcel-js](https://parceljs.org/) under the hood.
 
 Thanks to [Andrew Newman](<https://github.com/newmana>) for inspiration and support.
 
+The authentication code is loosely based off the examples at <https://github.com/haskell-servant/servant-auth>.
+
 Auth0 api calling code handily provided by [alsconnect](https://github.com/alasconnect/auth0).
