@@ -1,0 +1,4 @@
+.stack-work
+node_modules
+elm-stuff
+config/dev.cfg.json
