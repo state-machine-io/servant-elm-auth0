@@ -16,12 +16,23 @@ stack build
 
 
 ### Elm
+
+Just run yarn to set up.
+
 ```
 yarn install
 ```
 
 ## Running
 
+Uses stack exec and [parcel-js](https://parceljs.org/) under the hood.
+
 ```
 ./bin/server <configFile>
 ```
+
+## Thanks
+
+Thanks to Andrew Newman (@newmana) for inspiration and support.
+
+Auth0 api calling code handily provided by [alsconnect](https://github.com/alasconnect/auth0>)
