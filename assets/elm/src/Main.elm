@@ -1,10 +1,11 @@
 module Main exposing (main)
 
-import Html exposing (..)
+import Html as Html
+import Html.Attributes as HtmlAttributes
 
 
 main =
-    div []
-        [ text "Hello from Elm!"
-        , button [ href "/logout" ] [ text "logout" ]
+    Html.div []
+        [ Html.text "Hello from Elm!"
+        , Html.form [ HtmlAttributes.action "/logout" ] [ Html.button [ HtmlAttributes.type_ "submit" ] [ Html.text "logout" ] ]
         ]
