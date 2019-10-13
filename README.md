@@ -33,6 +33,6 @@ Uses stack exec and [parcel-js](https://parceljs.org/) under the hood.
 
 ## Thanks
 
-Thanks to Andrew Newman (@newmana) for inspiration and support.
+Thanks to [Andrew Newman](<https://github.com/newmana>) for inspiration and support.
 
-Auth0 api calling code handily provided by [alsconnect](https://github.com/alasconnect/auth0>)
+Auth0 api calling code handily provided by [alsconnect](https://github.com/alasconnect/auth0).
