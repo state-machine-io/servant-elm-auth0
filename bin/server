@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    echo "Usage: $0 [configFile]"
+    exit 1
+fi
+
+yarn run parcel assets/elm/index.html --public-url app & stack exec -- servant-elm-auth0-exe $1
