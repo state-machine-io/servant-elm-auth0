@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Servant Elm Auth0</title>
+    <link href="/home/css/bulma-0.7.5.css" rel="stylesheet">
+    <link href="/home/css/all.css" rel="stylesheet">
+</head>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="https://www.haskell.org/">
+            <img src="https://www.haskell.org/img/haskell-logo.svg" width="112" height="28">
+        </a>
+
+        <script>
+            let showNav = false;
+            function toggleMenu() {
+                let hamburgerElement = document.getElementById("hamburger")
+                let navElement = document.getElementById("navbarBasicExample")
+                if (showNav) {
+                    hamburgerElement.classList.remove("is-active");
+                    navElement.classList.remove("is-active");
+                    showNav = false;
+                } else {
+                    hamburgerElement.classList.add("is-active");
+                    navElement.classList.add("is-active");
+                    showNav = true;
+                }
+            }
+        </script>
+        <a role="button" id="hamburger" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+            data-target="navbarBasicExample" onClick=toggleMenu()>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/home">
+                Home
+            </a>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-light" href="/login">
+                        Log In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<body>
+    <section class="hero is-fullheight-with-navbar">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="columns is-vcentered">
+                    <div class="column is-12 is-multiline">
+                        <h1 class="title is-four-fifths">
+                            Servant Elm Auth0 Example
+                        </h1>
+                        <h2 class="subtitle is-three-fifths">
+                            Click the link to log in.
+                        </h2>
+                        <h3 class="subtitle is-three-fifths">
+                            <a class="button is-primary" href=/login id="login">Get Started</a>
+                        </h3>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

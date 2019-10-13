@@ -1,0 +1,69 @@
+name:                servant-elm-auth0
+version:             0.1.0.0
+synopsis:            Simple webapp template with Haskell and Elm.
+description:         Servant template for a SPA in Elm with authentication through Auth0.
+homepage:            https://github.com/state-machine-io/servant-elm-auth0#readme
+license:             MIT
+license-file:        LICENSE
+author:              State Machine Pty Ltd
+maintainer:          developers@statemachine.io
+copyright:           2019 State Machine Pty Ltd
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Lib, Config, Controller, Routes, Types, Types.Config
+  build-depends:       base >= 4.7 && < 5
+                     , auth0 >= 0.2.0.0
+                     , aeson
+                     , blaze-builder
+                     , bytestring
+                     , case-insensitive
+                     , cookie
+                     , jose
+                     , http-conduit
+                     , http-types
+                     , lens
+                     , mtl
+                     , monad-logger
+                     , optparse-generic
+                     , servant-server
+                     , servant-auth
+                     , servant-auth-server
+                     , servant-client
+                     , tagged
+                     , text
+                     , time
+                     , unordered-containers
+                     , wai
+                     , warp
+  default-language:    Haskell2010
+
+executable servant-elm-auth0-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , servant-elm-auth0
+                     , optparse-generic
+  default-language:    Haskell2010
+
+test-suite servant-elm-auth0-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , servant-elm-auth0
+                     , hspec
+                     , hspec-wai
+                     , hspec-wai-json
+                     , aeson
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/state-machine-io/servant-elm-auth0

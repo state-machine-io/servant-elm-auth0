@@ -1,0 +1,9 @@
+{
+    "client_secret": "AUTH0 CLIENT SECRET",
+    "client_id": "AUTH0 CLIENT ID",
+    "tenant_domain": "YOUR TENANT DOMAIN ON AUTH0",
+    "session_cookie_name": "servant-auth0",
+    "logout_route": "home",
+    "callback_route": "auth0",
+    "application_domain": "YOUR_APP_DOMAIN"
+}
