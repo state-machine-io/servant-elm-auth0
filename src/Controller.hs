@@ -17,7 +17,7 @@ where
 
 import           Blaze.ByteString.Builder      (toByteString)
 import           Control.Monad.Trans           (liftIO)
-import           Data.ByteString.Char8
+import qualified Data.ByteString.Char8         as ByteStringChar8
 import           Data.Monoid                   ((<>))
 import qualified Data.Text                     as Text
 import qualified Data.Text.Encoding            as TextEncoding
@@ -63,17 +63,16 @@ logoutUser config@Config.Config {..} = do
                      ++ [(Header.hLocation, logoutHeaderLocation config)]
     }
 
-logoutHeaderLocation :: Config.Config -> ByteString
-logoutHeaderLocation Config.Config {..} = pack
-  (  "https://"
-  ++ Text.unpack _configTenantDomain
-  ++ "/v2/logout?client_id="
-  ++ Text.unpack _configClientID
-  ++ "&returnTo="
-  ++ Text.unpack _configApplicationDomain
-  ++ "/"
-  ++ Text.unpack _configLogoutRoute
-  )
+logoutHeaderLocation :: Config.Config -> ByteStringChar8.ByteString
+logoutHeaderLocation Config.Config {..} = TextEncoding.encodeUtf8 $
+  "https://"
+  <> _configTenantDomain
+  <> "/v2/logout?client_id="
+  <> _configClientID
+  <> "&returnTo="
+  <> _configApplicationDomain
+  <> "/"
+  <> _configLogoutRoute
 
 unprotected :: Config.Config -> Servant.Server Routes.Unprotected
 unprotected config =
@@ -85,17 +84,16 @@ redirect config = throwError err302
   { errHeaders = [("Location", redirectHeaderLocation config)]
   }
 
-redirectHeaderLocation :: Config.Config -> ByteString
-redirectHeaderLocation Config.Config {..} = pack
-  (  "https://"
-  ++ Text.unpack _configTenantDomain
-  ++ "/authorize?response_type=code&scope=openid%20profile%20email&client_id="
-  ++ Text.unpack _configClientID
-  ++ "&redirect_uri="
-  ++ Text.unpack _configApplicationDomain
-  ++ "/"
-  ++ Text.unpack _configCallbackRoute
-  )
+redirectHeaderLocation :: Config.Config -> ByteStringChar8.ByteString
+redirectHeaderLocation Config.Config {..} = TextEncoding.encodeUtf8 $
+  "https://"
+  <> _configTenantDomain
+  <> "/authorize?response_type=code&scope=openid%20profile%20email&client_id="
+  <> _configClientID
+  <> "&redirect_uri="
+  <> _configApplicationDomain
+  <> "/"
+  <> _configCallbackRoute
 
 checkCreds
   :: Config.Config
@@ -129,7 +127,7 @@ checkCreds Config.Config {..} (Just code) = do
         cookieHeaders <- liftIO
           $ acceptAuth0LoginForRedirect _configCookieSettings idJWT
         throwError err302
-          { errHeaders = cookieHeaders ++ [(Header.hLocation, pack "app")]
+          { errHeaders = cookieHeaders <> [(Header.hLocation, TextEncoding.encodeUtf8 "app")]
           }
 checkCreds _ Nothing = throwError err401
 
@@ -143,7 +141,7 @@ acceptAuth0LoginForRedirect cookieSettings idJWT = do
       sessionCookie =
         applySessionCookieSettings cookieSettingsWithExpires
           $ applyCookieSettings cookieSettingsWithExpires
-          $ def { setCookieValue = pack $ Text.unpack idJWT }
+          $ def { setCookieValue = TextEncoding.encodeUtf8 idJWT }
   xsrfCookie <- liftIO $ AuthServer.makeXsrfCookie cookieSettingsWithExpires
   return
     [ (Header.hSetCookie, toByteString . renderSetCookie $ sessionCookie)
@@ -182,7 +180,7 @@ acceptAuth0Login cookieSettings idJWT = do
   let sessionCookie =
         applySessionCookieSettings cookieSettings
           $ applyCookieSettings cookieSettings
-          $ def { setCookieValue = pack $ Text.unpack idJWT }
+          $ def { setCookieValue = TextEncoding.encodeUtf8 idJWT }
   xsrfCookie <- AuthServer.makeXsrfCookie cookieSettings
   return $ addHeader sessionCookie . addHeader xsrfCookie
 
