@@ -1,9 +1,10 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 {-# OPTIONS_GHC -fprint-potential-instances #-}
+
 module Routes where
 
-import qualified Data.Proxy                    as Proxy
+import qualified Data.Proxy          as Proxy
 import           Servant
 import           Servant.Auth.Server
 

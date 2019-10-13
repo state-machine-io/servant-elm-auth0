@@ -1,16 +1,16 @@
-{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-{-# LANGUAGE OverloadedStrings     #-}
 module Types where
 
-import qualified Data.Aeson                    as Aeson
-import           GHC.Generics                   ( Generic )
-import qualified Servant.Auth.Server           as AuthServer
-import qualified Crypto.JOSE                   as Jose
-import qualified Crypto.JWT                    as Jose
-import qualified Data.HashMap.Strict           as HashMap
 import           Control.Lens
-import qualified Data.Text                     as Text
+import qualified Crypto.JOSE         as Jose
+import qualified Crypto.JWT          as Jose
+import qualified Data.Aeson          as Aeson
+import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Text           as Text
+import           GHC.Generics        (Generic)
+import qualified Servant.Auth.Server as AuthServer
 
 data Login = Login { username :: String, password :: String }
     deriving (Eq, Show, Read, Generic)
@@ -20,7 +20,7 @@ instance Aeson.FromJSON Login
 
 data User = User {
         name :: String
-    , email :: String
+    , email  :: String
     }
     deriving (Eq, Show, Read, Generic)
 

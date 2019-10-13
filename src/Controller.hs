@@ -1,49 +1,44 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE RecordWildCards   #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# OPTIONS_GHC -fprint-potential-instances #-}
+
 module Controller
   ( protected
   , unprotected
   )
 where
 
-import           Blaze.ByteString.Builder       ( toByteString )
-import qualified Servant.Auth.Server           as AuthServer
-import           Servant
-import           Control.Monad.Trans            ( liftIO )
-import qualified Servant.Client                as ServantClient
-import           Web.Cookie
-import           Data.Tagged
+import           Blaze.ByteString.Builder      (toByteString)
+import           Control.Monad.Trans           (liftIO)
+import           Data.ByteString.Char8
+import           Data.Monoid                   ((<>))
 import qualified Data.Text                     as Text
 import qualified Data.Text.Encoding            as TextEncoding
-import           Data.Monoid                    ( (<>) )
-import           Data.ByteString.Char8
-import qualified Data.ByteString.Lazy          as BSL
-import           Data.Time.Calendar             ( Day(..) )
-import           Data.Time.Clock                ( UTCTime(..)
-                                                , secondsToDiffTime
-                                                , getCurrentTime
-                                                , nominalDay
-                                                , addUTCTime
-                                                )
+import           Data.Time.Calendar            (Day (..))
+import           Data.Time.Clock               (UTCTime (..), addUTCTime,
+                                                getCurrentTime, nominalDay,
+                                                secondsToDiffTime)
 import qualified Network.HTTP.Types.Header     as Header
+import           Servant
+import qualified Servant.Auth.Server           as AuthServer
+import qualified Servant.Client                as ServantClient
+import           Web.Cookie
 
 -- Local
 import qualified Routes
-import qualified Types
 import qualified Types.Config                  as Config
 
-import           Auth0.Authentication.GetToken
-import           Auth0.Authentication.Logout
-import           Auth0
-import           Auth0.Types
+import qualified Auth0
+import qualified Auth0.Authentication.GetToken as Auth0GetToken
+import qualified Auth0.Authentication.Logout   as Auth0Logout
+import qualified Auth0.Types                   as Auth0Types
 
 
 -- | 'Protected' will be protected by 'auths', which we still have to specify.
@@ -56,15 +51,11 @@ protected config _ = AuthServer.throwAll err401
 
 logoutUser :: Config.Config -> Handler NoContent
 logoutUser config@Config.Config {..} = do
-  let logoutApi = logout
-        (  Just
-        $  Text.pack
-        $  Text.unpack _configApplicationDomain
-        ++ Text.unpack _configLogoutRoute
-        )
+  let logoutApi = Auth0Logout.logout
+        (Just $ _configApplicationDomain <> _configLogoutRoute)
         (Just _configClientID)
         Nothing
-  env           <- liftIO $ mkAuth0Env $ Text.unpack _configTenantDomain
+  env           <- liftIO $ Auth0.mkAuth0Env $ Text.unpack _configTenantDomain
   _             <- liftIO $ ServantClient.runClientM logoutApi env
   cookieHeaders <- liftIO $ expireCookies _configCookieSettings
   throwError err302
@@ -115,10 +106,10 @@ checkCreds
            NoContent
        )
 checkCreds Config.Config {..} (Just code) = do
-  let bdy = GetToken
-        AuthorizationCode
-        (mkClientId _configClientID)
-        (mkClientSecret _configClientSecret)
+  let bdy = Auth0GetToken.GetToken
+        Auth0Types.AuthorizationCode
+        (Auth0Types.mkClientId _configClientID)
+        (Auth0Types.mkClientSecret _configClientSecret)
         (Text.pack code)
         (  Just
         $  Text.pack
@@ -126,13 +117,13 @@ checkCreds Config.Config {..} (Just code) = do
         ++ "/"
         ++ Text.unpack _configLogoutRoute
         )
-  env <- liftIO $ mkAuth0Env $ Text.unpack _configTenantDomain
-  res <- liftIO $ ServantClient.runClientM (getToken bdy) env
+  env <- liftIO $ Auth0.mkAuth0Env $ Text.unpack _configTenantDomain
+  res <- liftIO $ ServantClient.runClientM (Auth0GetToken.getToken bdy) env
   case res of
-    Left a -> throwError err302
+    Left _ -> throwError err302
       { errHeaders = [("Location", TextEncoding.encodeUtf8 _configLogoutRoute)]
       }
-    Right tokenResponse -> case idToken tokenResponse of
+    Right tokenResponse -> case Auth0GetToken.idToken tokenResponse of
       Nothing    -> throwError err401
       Just idJWT -> do
         cookieHeaders <- liftIO
