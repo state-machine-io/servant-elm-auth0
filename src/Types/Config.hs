@@ -1,33 +1,31 @@
-{-# LANGUAGE DataKinds                  #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE NoMonomorphismRestriction  #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
-{-# LANGUAGE TypeFamilies               #-}
-{-# LANGUAGE TypeOperators              #-}
+{-# LANGUAGE DataKinds                 #-}
+{-# LANGUAGE DeriveGeneric             #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE FlexibleInstances         #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE ScopedTypeVariables       #-}
+{-# LANGUAGE TypeFamilies              #-}
+{-# LANGUAGE TypeOperators             #-}
 
 module Types.Config where
 
-import qualified Data.Aeson                    as Aeson
-import qualified Data.Text                     as Text
-import qualified Data.ByteString               as BS
+import qualified Data.Aeson          as Aeson
+import qualified Data.ByteString     as BS
+import qualified Data.Text           as Text
 
+import           Options.Generic     (Generic, ParseRecord)
 import           Servant.Auth.Server
-import           Options.Generic                ( Generic
-                                                , ParseRecord
-                                                )
 
 data InputConfig = InputConfig
     {
-        _inputConfigClientSecret :: Text.Text
-        , _inputConfigClientID :: Text.Text
-        , _inputConfigTenantDomain :: Text.Text
+        _inputConfigClientSecret        :: Text.Text
+        , _inputConfigClientID          :: Text.Text
+        , _inputConfigTenantDomain      :: Text.Text
         , _inputConfigSessionCookieName :: Maybe Text.Text
-        , _inputConfigLogoutRoute :: Text.Text
-        , _inputConfigCallbackRoute :: Text.Text
+        , _inputConfigLogoutRoute       :: Text.Text
+        , _inputConfigCallbackRoute     :: Text.Text
         , _inputConfigApplicationDomain :: Text.Text
     } deriving (Show, Generic)
 
@@ -43,12 +41,12 @@ instance Aeson.FromJSON InputConfig where
 
 data Config = Config
     {
-        _configClientSecret :: Text.Text
-        , _configClientID :: Text.Text
-        , _configTenantDomain :: Text.Text
-        , _configLogoutRoute :: Text.Text
-        , _configCallbackRoute :: Text.Text
+        _configClientSecret        :: Text.Text
+        , _configClientID          :: Text.Text
+        , _configTenantDomain      :: Text.Text
+        , _configLogoutRoute       :: Text.Text
+        , _configCallbackRoute     :: Text.Text
         , _configApplicationDomain :: Text.Text
-        , _configJWTSettings :: JWTSettings
-        , _configCookieSettings :: CookieSettings
+        , _configJWTSettings       :: JWTSettings
+        , _configCookieSettings    :: CookieSettings
     }

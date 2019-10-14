@@ -8,19 +8,16 @@
 
 module Config where
 
+import qualified Crypto.JOSE                as Jose
+import qualified Data.Aeson                 as Aeson
+import qualified Data.ByteString            as ByteString
+import qualified Data.ByteString.Lazy.Char8 as ByteStringLazyChar8
+import qualified Data.Maybe                 as DataMaybe
+import qualified Data.Text.Encoding         as TextEncoding
 import           Servant.Auth.Server
-import qualified Crypto.JOSE.JWA.JWS           as Jose
-import qualified Crypto.JOSE                   as Jose
-import qualified Crypto.JWT                    as Jose
-import qualified Data.Aeson                    as Aeson
-import qualified Data.ByteString.Lazy.Char8    as ByteStringLazyChar8
-import qualified Data.Maybe                    as DataMaybe
-import qualified System.Exit                   as SystemExit
-import qualified Data.Text                     as Text
-import qualified Data.ByteString               as ByteString
-import qualified Data.Text.Encoding            as TextEncoding
+import qualified System.Exit                as SystemExit
 
-import qualified Types.Config                  as Config
+import qualified Types.Config               as Config
 
 getConfig :: FilePath -> IO Config.Config
 getConfig cfgFilePath = do
@@ -32,7 +29,7 @@ getConfig cfgFilePath = do
     Right config -> pure (addDefaults config)
 
 addDefaults :: Config.InputConfig -> Config.Config
-addDefaults inputConfig@Config.InputConfig {..} = Config.Config
+addDefaults Config.InputConfig {..} = Config.Config
   _inputConfigClientSecret
   _inputConfigClientID
   _inputConfigTenantDomain

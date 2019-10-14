@@ -1,45 +1,31 @@
 
-{-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE TypeOperators         #-}
 {-# OPTIONS_GHC -fno-warn-unused-binds #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-}
 {-# OPTIONS_GHC -fprint-potential-instances #-}
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Lib
   ( startApp
   )
 where
 
-import           Data.Aeson.TH
 import           Network.Wai
-import           Control.Concurrent             ( forkIO )
-import           Control.Monad                  ( forever )
-import           Control.Monad.Trans            ( liftIO )
-import           Data.Aeson                     ( FromJSON
-                                                , ToJSON
-                                                )
-import           Network.Wai.Handler.Warp       ( run )
-import           System.Environment             ( getArgs )
+import           Network.Wai.Handler.Warp            (run)
 import           Servant
-import           Servant.Auth.Server
-import           Servant.Auth.Server.SetCookieOrphan
-                                                ( )
-import           Data.ByteString.Char8          ( pack )
-import qualified Control.Monad.Logger          as MonadLogger
+import           Servant.Auth.Server.SetCookieOrphan ()
 
-import qualified Routes
-import qualified Config
-import qualified Types
 import qualified Controller
-import qualified Types.Config                  as Config
+import qualified Routes
+import qualified Types.Config                        as Config
 
 
 server :: Config.Config -> Server (Routes.API auths)
