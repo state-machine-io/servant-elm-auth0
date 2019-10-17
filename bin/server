@@ -6,4 +6,4 @@ if [ -z "$1" ]
     exit 1
 fi
 
-yarn run parcel assets/elm/index.html --public-url app && stack exec -- servant-elm-auth0-exe $1
+yarn run parcel assets/elm/index.html --public-url app & stack exec -- servant-elm-auth0-exe $1
